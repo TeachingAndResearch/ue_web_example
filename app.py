@@ -13,26 +13,30 @@ def traitement_formulaire_addition(form):
 
 
 def afficher_formulaire_addition(form, errors):
-    return flask.render_template("form_addition.html.jinja2")
+    return flask.render_template("form_addition.html.jinja2", errors=errors, form=form)
 
 
 def formulaire_est_valide(form):
-    number_a = flask.request.form.get("number_a")
-    number_b = flask.request.form.get("number_b")
-    operator = flask.request.form.get("operator")
+    number_a = flask.request.form.get("number_a", "")
+    number_b = flask.request.form.get("number_b", "")
+    operator = flask.request.form.get("operator", "")
 
     result = True
     errors = []
 
-    if number_a is None:
+    if number_a is "":
         result = False
         errors += ["missing 'number_a' parameter"]
-    if number_b is None:
+    if number_b is "":
         result = False
         errors += ["missing 'number_b' parameter"]
-    if operator is None:
+    if operator is "":
         result = False
         errors += ["missing 'operator' parameter"]
+    authorized_operators = ["+", "-", "*", "/", "%"]
+    if operator not in authorized_operators:
+        result = False
+        errors += [f"operator must be in {authorized_operators}"]
 
     return result, errors
 

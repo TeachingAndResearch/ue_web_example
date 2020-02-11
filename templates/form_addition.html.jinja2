@@ -3,19 +3,26 @@
         <title>Formulaires</title>
     </head>
     <body>
+
+    <ul>
+    {% for error in errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+
     <form action="{{ url_for("fonction_formulaire_addition") }}" method="post">
         <dl>
             <dt>Number A</dt>
             <dd>
-                <input type="text" name="number_a" placeholder="number_a">
+                <input type="text" name="number_a" placeholder="number_a" value="{{ form.number_a }}">
             </dd>
             <dt>Operator</dt>
             <dd>
-                <input type="text" name="operator" placeholder="operator">
+                <input type="text" name="operator" placeholder="operator" value="{{ form.operator }}">
             </dd>
             <dt>Number B</dt>
             <dd>
-                <input type="text" name="number_b" placeholder="number_b">
+                <input type="text" name="number_b" placeholder="number_b" value="{{ form.number_b }}">
             </dd>
         </dl>
         <input type="submit">
