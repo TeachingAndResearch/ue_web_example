@@ -51,8 +51,13 @@ def test():
     rocket.players.append(player1)
     rocket.players.append(player2)
     db.session.add(rocket)
+    # Add the two players to the team 'sonette'
     sonette.players.append(player2)
     sonette.players.append(player3)
+    db.session.commit()
+    # Remove one player from the team 'sonette'
+    sonette.players.remove(player3)
+    db.session.add(sonette)
     db.session.commit()
 
     # Fetch all sports
