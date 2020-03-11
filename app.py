@@ -21,6 +21,7 @@ def clean():
 
 
 @app.route("/test")
+@app.route("/")
 def test():
     clean()
 
