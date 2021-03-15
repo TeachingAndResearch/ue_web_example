@@ -1,55 +1,107 @@
-from flask import Flask
 import flask
-from database.database import db, init_database
-import database.models
-from sar2019.config import Config
-from sar2019.forms import PostEditForm
+from flask import render_template, redirect, url_for, request, flash
+from flask_login import login_required, logout_user, LoginManager, login_user
+from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__)
+from database.database import db, init_database
+import database.models as models
+from config.config import Config
+
+app = flask.Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
+login_manager = LoginManager()
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user):
+    # since the user_id is just the primary key of our user table, use it in the query for the user
+    return models.User.query.filter_by(email=user).first()
+
 
 with app.test_request_context():
     init_database()
 
 
 @app.route('/')
-def index():
-    posts = database.models.Post.query.all()
-    return flask.render_template("homepage.html.jinja2",
-                                 posts=posts)
+@app.route('/home')
+def home():
+    return render_template("index.html")
 
 
-@app.route("/posts/edit/", methods=["GET", "POST"])
-@app.route("/posts/edit/<post_id>", methods=["GET", "POST"])
-def create_or_process_post(post_id=None):
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template("profile.html")
 
-    # Fetch the corresponding post from the database. If no ID is provided,
-    # then post will be 'None', and the form will consider this value
-    # as a sign that a new post should be created
-    post = database.models.Post.query.filter_by(id=post_id).first()
-    form = PostEditForm(obj=post)
 
-    if form.validate_on_submit():
-        if post is None:
-            post = database.models.Post()
-            post.user_id = 1
-        post.title = form.title.data
-        post.content = form.content.data
-        db.session.add(post)
+@app.route('/signup', methods=['GET'])
+def signup_form():
+    return render_template("signup.html")
+
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    username = flask.request.form.get("username")
+    email = flask.request.form.get("email")
+    password = flask.request.form.get("password")
+
+    user = models.User.query.filter_by(email=email).first() # if this returns a user, then the email already exists in database
+    if user: # if a user is found, we want to redirect back to signup page so user can try again
+        flash('Email address already exists')
+        return redirect(url_for('signup'))
+
+    user = models.User.query.filter_by(username=username).first() # if this returns a user, then the username already exists in database
+    if user: # if a user is found, we want to redirect back to signup page so user can try again
+        flash('Username address already exists')
+        return redirect(url_for('signup'))
+
+    if username and email:
+        user = models.User(username=username,
+                           email=email,
+                           password=generate_password_hash(password, method='sha256'))
+        db.session.add(user)
         db.session.commit()
-
-        return flask.redirect(flask.url_for('index'))
-    return flask.render_template('edit_post_form.html.jinja2', form=form, post=post)
-
-
-@app.route("/posts/delete/<post_id>")
-def delete_post(post_id=None):
-    post = database.models.Post.query.filter_by(id=post_id).first()
-    db.session.delete(post)
-    db.session.commit()
-    return flask.redirect(flask.url_for('index'))
+    else:
+        return "Please fill the form"
+    return profile()
 
 
-if __name__ == '__main__':
-    app.run()
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    user = None
+    if request.method == "POST":
+        username = request.form.get('username')
+        password = request.form.get('password')
+        remember = True if request.form.get('remember') else False
+
+        user = models.User.query.filter_by(username=username).first()
+
+        # check if the user actually exists
+        # take the user-supplied password, hash it, and compare it to the hashed password in the database
+        if not user or not check_password_hash(user.password, password):
+            flash('Please check your login details and try again.')
+            return render_template("login.html") # if the user doesn't exist or password is wrong, reload the page
+
+    else:
+        return render_template("login.html")
+    # if the above check passes, then we know the user has the right credentials
+    login_user(user, remember=remember)
+    return render_template("profile.html")
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    """Logout the current user."""
+    logout_user()
+    return render_template("index.html")
+
+
+@app.route('/users')
+@login_required
+def show_users():
+    users_list = models.User.query.all()
+    return render_template("users.html", users_list=users_list)

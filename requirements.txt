@@ -1,3 +1,8 @@
+flask~=1.1.2
 flask-sqlalchemy
-pyyaml
-Flask-WTF
+flask-login
+pyyaml~=5.4.1
+flask-WTF
+wtforms~=2.3.3
+yaml~=0.2.5
+werkzeug~=1.0.1

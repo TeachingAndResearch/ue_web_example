@@ -1,21 +1,32 @@
+from flask_login import UserMixin
+
 from database.database import db
 
+class User(UserMixin, db.Model):
+    """
+    :param str email: email address of user
+    :param str password: encrypted password for the user
 
-class User(db.Model):
+    """
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-    # Relationship User <--> Post
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    email = db.Column(db.String, unique=True)
+    username = db.Column(db.String, unique=True)
+    password = db.Column(db.String)
+    authenticated = db.Column(db.Boolean, default=False)
 
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
+    def is_active(self):
+        """True, as all users are active."""
+        return True
 
+    def get_id(self):
+        """Return the email address to satisfy Flask-Login's requirements."""
+        return self.email
 
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.Text)
-    content = db.Column(db.Text)
-    # Relationship User <--> Post
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    def is_authenticated(self):
+        """Return True if the user is authenticated."""
+        return self.authenticated
+
+    def is_anonymous(self):
+        """False, as anonymous users aren't supported."""
+        return False
