@@ -20,7 +20,7 @@ def populate_database():
         return
 
     with open("database/mock_data.yaml") as f:
-        mock_data = yaml.load(f)
+        mock_data = yaml.safe_load(f)
         for mock_object_key, mock_object_dict in mock_data.items():
             if mock_object_key == "_classes":
                 continue
