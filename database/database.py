@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 import yaml
 import inspect
+import pathlib
+
 
 db = SQLAlchemy()
 
@@ -19,7 +21,9 @@ def populate_database():
     if not do_populate:
         return
 
-    with open("database/mock_data.yaml") as f:
+    database_folder = str(pathlib.Path(__file__).parent.absolute())
+    mock_data_file = database_folder + "/mock_data.yaml"
+    with open(mock_data_file) as f:
         mock_data = yaml.load(f)
         for mock_object_key, mock_object_dict in mock_data.items():
             if mock_object_key == "_classes":
