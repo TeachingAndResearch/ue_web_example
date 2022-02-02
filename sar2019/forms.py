@@ -1,8 +1,7 @@
-from flask_wtf import Form
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Email
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, validators
 
 
-class PostEditForm(Form):
-    title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
+class PostEditForm(FlaskForm):
+    title = StringField('Title', validators=[validators.DataRequired()])
+    content = TextAreaField('Content', validators=[validators.DataRequired()])
