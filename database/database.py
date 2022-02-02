@@ -21,8 +21,8 @@ def populate_database():
         return
     
     database_folder = str(pathlib.Path(__file__).parent.absolute())
-    mock_data = database_folder + "/mock_data.yaml"
-    with open(mock_data) as f:
+    mock_data_file = database_folder + "/mock_data.yaml"
+    with open(mock_data_file) as f:
         mock_data = yaml.safe_load(f)
         for mock_object_key, mock_object_dict in mock_data.items():
             if mock_object_key == "_classes":
