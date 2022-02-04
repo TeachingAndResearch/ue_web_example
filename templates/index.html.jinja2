@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Exercice DOM</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="interface.js"></script>
+  </head>
+  <body>
+
+    <input type="text" id="filter-friends" placeholder="Filter by name">
+
+    <table id="friends">
+      <thead>
+        <tr>
+          <th id="sort-name">Name</th>
+          <th id="sort-age">Age</th>
+        </tr>
+      </thead>
+
+      <tbody>
+            {%  for user in users %}
+        <tr data-age="{{ user.age }}" data-name="{{ user.username }}">
+            <td>{{ user.username }}</td>
+            <td>{{ user.age }}</td>
+        </tr>
+            {% endfor %}
+      </tbody>
+
+    </table>
+
+  </body>
+</html>
