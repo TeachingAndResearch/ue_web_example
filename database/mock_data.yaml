@@ -2,21 +2,21 @@ _classes:
   engineer: &engineer
     class: Engineer
 
-user_jpastor:
+user_tanderson:
   id: 1
-  username: jpastor
-  name: jonathan
-  lastname: pastor
-  email: jonathan.pastor@internet.com
-  site: nantes
-  age: 31
+  username: tanderson
+  name: Thomas
+  lastname: Anderson
+  email: t.a.anderson@matrix.com
+  site: newyork
+  age: 30
   <<: *engineer
-user_dperez:
+user_asmith:
   id: 2
-  username: dperez
-  name: Dorian
-  lastname: Perez
-  email: dorian.perez@internet.com
-  age: 28
-  site: brest
+  username: asmith
+  name: Agent
+  lastname: Smith
+  email: a.smith@matrix.com
+  age: -1
+  site: earth
   <<: *engineer
