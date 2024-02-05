@@ -2,7 +2,7 @@ from flask import Flask
 import flask
 from database.database import db, init_database
 import database.models
-from sar2019.config import Config
+from utilities.config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
