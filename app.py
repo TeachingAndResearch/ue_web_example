@@ -1,5 +1,5 @@
 import flask
-from sar2019.config import Config
+from utilities.config import Config
 
 
 app = flask.Flask(__name__)
