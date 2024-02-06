@@ -1,5 +1,5 @@
 import flask
-from sar2019.config import Config
+from utilities.config import Config
 
 
 app = flask.Flask(__name__)
@@ -24,13 +24,13 @@ def formulaire_est_valide(form):
     result = True
     errors = []
 
-    if number_a is "":
+    if number_a == "":
         result = False
         errors += ["missing 'number_a' parameter"]
-    if number_b is "":
+    if number_b == "":
         result = False
         errors += ["missing 'number_b' parameter"]
-    if operator is "":
+    if operator == "":
         result = False
         errors += ["missing 'operator' parameter"]
     authorized_operators = ["+", "-", "*", "/", "%"]
