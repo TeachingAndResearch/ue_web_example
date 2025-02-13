@@ -2,7 +2,7 @@ import flask
 from database.models import *
 
 app = flask.Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database/database.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../database/database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "secret_key1234"
 
